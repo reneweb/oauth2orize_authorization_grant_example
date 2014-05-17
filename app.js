@@ -21,7 +21,7 @@ app.use(passport.initialize())
 app.get('/client/registration', function(req, res) { res.render('clientRegistration') })
 app.post('/client/registration', function(req, res) { registration.registerClient })
 
-app.get('/registration', function(req, res) { res.render('registration') })
+app.get('/registration', function(req, res) { res.render('userRegistration') })
 app.post('/registration', registration.registerUser)
 
 app.get('/login', function(req, res) { res.render('login') })
