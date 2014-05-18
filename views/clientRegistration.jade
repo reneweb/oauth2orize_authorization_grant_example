@@ -1,0 +1,8 @@
+extends layout
+div
+  form(action='/client/registration',method='post')
+    label(for='username') Username
+       input(id='username',type='text',value='',placeholder='username',name='email')
+    label(for='password') password
+       input(id='password',type='password',value='',placeholder='',name='password')
+    input(type='submit',value='Sign up')
