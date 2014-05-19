@@ -1,0 +1,13 @@
+extends layout
+block content
+    p Hi #{user.name}
+      p #{client.name}
+          b
+          | is requesting access to your account.
+        p Do you approve?
+        form(action='/decision', method='post')
+            p
+                input(name='transaction_id', type='hidden', value='value')
+            p
+                input(type='submit',value='Allow', id='allow')
+                input(type='submit',value='Deny', name='cancel', id='deny')
