@@ -1,8 +1,12 @@
 extends layout
-div
-  form(action='/login',method='post')
-    label(for='username') Username
-       input(id='username',type='text',value='',placeholder='username',name='email')
-    label(for='password') password
-       input(id='password',type='password',value='',placeholder='',name='password')
-    input(type='submit',value='Login')
+block content
+    div
+      form(action='/login?clientId=#{clientId}&clientSecret=#{clientSecret}',method='post')
+        p
+            label(for='username') Username: 
+               input(id='username', type='text',value='', name='username')
+        p
+            label(for='password') Password: 
+               input(id='password', type='password',value='', name='password')
+        p
+            input(type='submit',value='Login')

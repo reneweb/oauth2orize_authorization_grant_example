@@ -7,6 +7,9 @@
   "dependencies": {
     "express": "4.x.x",
     "express-validator": "2.x.x",
+    "cookie-parser": "1.x.x",
+    "express-session": "1.x.x",
+    "jade": "1.x.x",
     "body-parser": "1.x.x",
     "mongojs": "0.x.x",
     "oauth2orize": "1.x.x",

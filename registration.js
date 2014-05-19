@@ -6,7 +6,7 @@ exports.registerUser = function(req, res) {
     req.checkBody('username', 'No valid username is given').notEmpty().len(3, 40)
     req.checkBody('password', 'No valid password is given').notEmpty().len(6, 50)
 
-    var errors = req.validationErrors();
+    var errors = req.validationErrors()
     if (errors) {
         res.send(errors, 400)
     } else {
