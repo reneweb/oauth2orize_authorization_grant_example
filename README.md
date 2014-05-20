@@ -1,7 +1,7 @@
 oauth2orize_authorization_grant_example
 =======================================
 
-This is an example of oAuth's authorization grant flow using oauth2orize, express 4 and mongoDB.
+This is an example of the oAuth authorization grant flow using oauth2orize, express 4 and mongoDB.
 
 ##### Installation
 
