@@ -6,7 +6,7 @@ var oauth2orize = require('oauth2orize')
     , bcrypt = require('bcrypt')
 
 // create OAuth 2.0 server
-var server = oauth2orize.createServer();
+var server = oauth2orize.createServer()
 
 //(De-)Serialization for clients
 server.serializeClient(function(client, done) {
@@ -36,7 +36,7 @@ server.exchange(oauth2orize.exchange.code(function (client, code, redirectURI, d
     db.collection('authorizationCodes').findOne({code: code}, function (err, authCode) {
         if (err) return done(err)
         if (!authCode) return done(null, false)
-        if (client._id !== authCode.clienclientIdtID) return done(null, false)
+        if (client.clientId !== authCode.clientId) return done(null, false)
         if (redirectURI !== authCode.redirectURI) return done(null, false)
         
         db.collection('authorizationCodes').delete({code: code}, function(err) {
@@ -70,7 +70,7 @@ server.exchange(oauth2orize.exchange.refreshToken(function (client, refreshToken
     
         db.collection('accessTokens').update({refreshToken: refreshTokenHash}, {$set: {token: accessTokenHash, scope: scope, expirationDate: expirationDate}}, function (err) {
             if (err) return done(err)
-            done(null, newAccessToken, refreshToken, {expires_in: expirationDate});
+            done(null, newAccessToken, refreshToken, {expires_in: expirationDate})
         })
     })
 }))
