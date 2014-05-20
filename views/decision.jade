@@ -1,13 +1,13 @@
 extends layout
 block content
-    p Hi #{user.name}
-      p #{client.name}
-          b
+    p Hi #{user.username}
+      p
+          b #{client.name}
           | is requesting access to your account.
         p Do you approve?
         form(action='/decision', method='post')
             p
-                input(name='transaction_id', type='hidden', value='value')
+                input(name='transaction_id', type='hidden', value='#{transactionID}')
             p
                 input(type='submit',value='Allow', id='allow')
                 input(type='submit',value='Deny', name='cancel', id='deny')

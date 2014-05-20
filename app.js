@@ -29,10 +29,10 @@ app.post('/client/registration', registration.registerClient)
 app.get('/registration', function(req, res) { res.render('userRegistration') })
 app.post('/registration', registration.registerUser)
 
-app.get('/login', function(req, res) { res.render('login', {clientId : req.query.clientId, clientSecret: req.query.clientSecret}) })
-app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }, function(req, res) {
-    res.redirect('/oauth/authorization?clientId=' + req.query.clientId + '&clientSecret=' + req.query.clientSecret)
-  }))
+app.get('/login', function(req, res) { res.render('login', {clientId : req.query.clientId, clientSecret: req.query.clientSecret, redirectUri: req.query.redirectUri}) })
+app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), function(req, res) {
+    res.redirect('/oauth/authorization?response_type=code&client_id=' + req.body.clientId + '&client_secret=' + req.body.clientSecret + '&redirect_uri=' + req.body.redirectUri)
+  })
 
 app.get('/oauth/authorization', oauth.authorization)
 app.post('/decision', oauth.decision)
