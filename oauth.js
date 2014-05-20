@@ -10,11 +10,11 @@ var server = oauth2orize.createServer();
 
 //(De-)Serialization for clients
 server.serializeClient(function(client, done) {
-    return done(null, client.clientId)
+    return done(null, client.id)
 })
 
 server.deserializeClient(function(id, done) {
-    db.collection('clients').find({clientId: id}, function(err, client) {
+    db.collection('clients').find(id, function(err, client) {
         if (err) return done(err)
         return done(null, client)
     })
@@ -25,7 +25,7 @@ server.grant(oauth2orize.grant.code(function(client, redirectURI, user, ares, do
     var code = utils.uid(16)
     var codeHash = crypto.createHash('sha1').update(code).digest('hex')
     
-    db.collection('authorizationCodes').save({code: codeHash, clientId: client[0].clientId, redirectURI: redirectURI, userId: user.username}, function(err) {
+    db.collection('authorizationCodes').save({code: codeHash, clientId: client._id, redirectURI: redirectURI, userId: user.username}, function(err) {
         if (err) return done(err)
         done(null, code)
     })
@@ -33,31 +33,22 @@ server.grant(oauth2orize.grant.code(function(client, redirectURI, user, ares, do
 
 //Used to exchange authorization codes for access token
 server.exchange(oauth2orize.exchange.code(function (client, code, redirectURI, done) {
-    var codeHash = crypto.createHash('sha1').update(code).digest('hex')
-    db.collection('authorizationCodes').findOne({code: codeHash}, function (err, authCode) {
+    db.collection('authorizationCodes').findOne({code: code}, function (err, authCode) {
         if (err) return done(err)
         if (!authCode) return done(null, false)
-        if (client.clientId !== authCode.clientId) return done(null, false)
+        if (client._id !== authCode.clienclientIdtID) return done(null, false)
         if (redirectURI !== authCode.redirectURI) return done(null, false)
         
-        db.collection('authorizationCodes').remove({code: codeHash}, function(err) {
+        db.collection('authorizationCodes').delete({code: code}, function(err) {
             if(err) return done(err)
             var token = utils.uid(256)
-            var refreshToken = utils.uid(256)
             var tokenHash = crypto.createHash('sha1').update(token).digest('hex')
-            var refreshTokenHash = crypto.createHash('sha1').update(refreshToken).digest('hex')
-
-            var expirationDate = new Date(new Date().getTime() + (3600 * 1000))
             
-<<<<<<< HEAD
             var expirationDate = new Date(new Date().getTime() + (3600 * 1000))
             
             db.collection('accessTokens').save({token: tokenHash, expirationDate: expirationDate, userId: authCode.userId, clientId: authCode.clientId}, function(err) {
-=======
-            db.collection('accessTokens').save({token: tokenHash, refreshToken: refreshTokenHash, expirationDate: expirationDate, userId: authCode.userId, clientId: authCode.clientId}, function(err) {
->>>>>>> 81c476cb0d05b0ac8955fdb725b8545e02f09bd7
                 if (err) return done(err)
-                done(null, token, refreshToken, {expires_in: expirationDate})
+                done(null, token)
             })
         })
     })
@@ -79,7 +70,7 @@ server.exchange(oauth2orize.exchange.refreshToken(function (client, refreshToken
     
         db.collection('accessTokens').update({refreshToken: refreshTokenHash}, {$set: {token: accessTokenHash, scope: scope, expirationDate: expirationDate}}, function (err) {
             if (err) return done(err)
-            done(null, newAccessToken, refreshToken, {expires_in: expirationDate})
+            done(null, newAccessToken, refreshToken, {expires_in: expirationDate});
         })
     })
 }))
@@ -94,31 +85,4 @@ exports.authorization = [
     db.collection('clients').findOne({clientId: clientId}, function(err, client) {
       if (err) return done(err)
       // WARNING: For security purposes, it is highly advisable to check that
-      // redirectURI provided by the client matches one registered with
-      // the server. For simplicity, this example does not. You have
-      // been warned.
-      return done(null, client, redirectURI)
-    })
-  }),
-  function(req, res) {
-    res.render('decision', { transactionID: req.oauth2.transactionID, user: req.user, client: req.oauth2.client });
-  }
-]
-
-// user decision endpoint
-
-exports.decision = [
-  function(req, res, next) {
-    if (req.user) next()
-    else res.redirect('/login')
-  },
-  server.decision()
-]
-
-// token endpoint
-exports.token = [
-    passport.authenticate(['clientBasic', 'clientPassword'], { session: false }),
-    server.token(),
-    server.errorHandler()
-]
-
+      // redirectURI provided by the client matches one 
