@@ -85,4 +85,31 @@ exports.authorization = [
     db.collection('clients').findOne({clientId: clientId}, function(err, client) {
       if (err) return done(err)
       // WARNING: For security purposes, it is highly advisable to check that
-      // redirectURI provided by the client matches one 
+      // redirectURI provided by the client matches one registered with
+      // the server. For simplicity, this example does not. You have
+      // been warned.
+      return done(null, client, redirectURI)
+    })
+  }),
+  function(req, res) {
+    res.render('decision', { transactionID: req.oauth2.transactionID, user: req.user, client: req.oauth2.client })
+  }
+]
+
+// user decision endpoint
+
+exports.decision = [
+  function(req, res, next) {
+    if (req.user) next()
+    else res.redirect('/login')
+  },
+  server.decision()
+]
+
+// token endpoint
+exports.token = [
+    passport.authenticate(['clientBasic', 'clientPassword'], { session: false }),
+    server.token(),
+    server.errorHandler()
+]
+
