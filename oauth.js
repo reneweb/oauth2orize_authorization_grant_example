@@ -42,13 +42,15 @@ server.exchange(oauth2orize.exchange.code(function (client, code, redirectURI, d
         db.collection('authorizationCodes').delete({code: code}, function(err) {
             if(err) return done(err)
             var token = utils.uid(256)
+            var refreshToken = utils.uid(256)
             var tokenHash = crypto.createHash('sha1').update(token).digest('hex')
+            var refreshTokenHash = crypto.createHash('sha1').update(refreshToken).digest('hex')
             
             var expirationDate = new Date(new Date().getTime() + (3600 * 1000))
             
-            db.collection('accessTokens').save({token: tokenHash, expirationDate: expirationDate, userId: authCode.userId, clientId: authCode.clientId}, function(err) {
+            db.collection('accessTokens').save({token: tokenHash, refreshToken: refreshTokenHash, expirationDate: expirationDate, userId: authCode.userId, clientId: authCode.clientId}, function(err) {
                 if (err) return done(err)
-                done(null, token)
+                done(null, token, refreshToken, {expires_in: expirationDate})
             })
         })
     })
