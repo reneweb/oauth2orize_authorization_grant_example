@@ -1,6 +1,6 @@
 var mongojs = require('mongojs')
 
-var db = mongojs('oauth2orize_authorization_grant_example')
+var db = mongojs(process.env.IP + '/oauth2orize_authorization_grant_example')
 
 exports.db = function() {
     return db

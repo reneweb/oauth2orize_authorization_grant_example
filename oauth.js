@@ -10,11 +10,11 @@ var server = oauth2orize.createServer()
 
 //(De-)Serialization for clients
 server.serializeClient(function(client, done) {
-    return done(null, client.id)
+    return done(null, client.clientId)
 })
 
 server.deserializeClient(function(id, done) {
-    db.collection('clients').find(id, function(err, client) {
+    db.collection('clients').find({clientId: id}, function(err, client) {
         if (err) return done(err)
         return done(null, client)
     })
