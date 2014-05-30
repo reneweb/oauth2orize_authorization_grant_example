@@ -39,7 +39,7 @@ server.exchange(oauth2orize.exchange.code(function (client, code, redirectURI, d
         if (client.clientId !== authCode.clientId) return done(null, false)
         if (redirectURI !== authCode.redirectURI) return done(null, false)
         
-        db.collection('authorizationCodes').delete({code: code}, function(err) {
+        db.collection('authorizationCodes').remove({code: code}, function(err) {
             if(err) return done(err)
             var token = utils.uid(256)
             var refreshToken = utils.uid(256)
