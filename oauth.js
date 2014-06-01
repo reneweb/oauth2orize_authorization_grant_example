@@ -66,7 +66,7 @@ server.exchange(oauth2orize.exchange.refreshToken(function (client, refreshToken
     db.collection('refreshTokens').findOne({refreshToken: refreshTokenHash}, function (err, token) {
         if (err) return done(err)
         if (!token) return done(null, false)
-        if (client.username !== token.clientID) return done(null, false)
+        if (client.clientId !== token.clientId) return done(null, false)
         
         var newAccessToken = utils.uid(256)
         var accessTokenHash = crypto.createHash('sha1').update(newAccessToken).digest('hex')
