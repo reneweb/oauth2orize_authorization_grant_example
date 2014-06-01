@@ -47,10 +47,13 @@ server.exchange(oauth2orize.exchange.code(function (client, code, redirectURI, d
             var refreshTokenHash = crypto.createHash('sha1').update(refreshToken).digest('hex')
             
             var expirationDate = new Date(new Date().getTime() + (3600 * 1000))
-            
-            db.collection('accessTokens').save({token: tokenHash, refreshToken: refreshTokenHash, expirationDate: expirationDate, userId: authCode.userId, clientId: authCode.clientId}, function(err) {
+
+            db.collection('accessTokens').save({token: tokenHash, expirationDate: expirationDate, userId: authCode.userId, clientId: authCode.clientId}, function(err) {
                 if (err) return done(err)
-                done(null, token, refreshToken, {expires_in: expirationDate})
+                db.collection('refreshTokens').save({refreshToken: refreshTokenHash, clientId: authCode.clientId, userId: authCode.userId}, function (err) {
+                    if (err) return done(err)
+                    done(null, token, refreshToken, {expires_in: expirationDate})
+                })
             })
         })
     })
@@ -59,8 +62,8 @@ server.exchange(oauth2orize.exchange.code(function (client, code, redirectURI, d
 //Refresh Token
 server.exchange(oauth2orize.exchange.refreshToken(function (client, refreshToken, scope, done) {
     var refreshTokenHash = crypto.createHash('sha1').update(refreshToken).digest('hex')
-    
-    db.collection('accessTokens').findOne({refreshToken: refreshTokenHash}, function (err, token) {
+
+    db.collection('refreshTokens').findOne({refreshToken: refreshTokenHash}, function (err, token) {
         if (err) return done(err)
         if (!token) return done(null, false)
         if (client.username !== token.clientID) return done(null, false)
@@ -70,7 +73,7 @@ server.exchange(oauth2orize.exchange.refreshToken(function (client, refreshToken
         
         var expirationDate = new Date(new Date().getTime() + (3600 * 1000))
     
-        db.collection('accessTokens').update({refreshToken: refreshTokenHash}, {$set: {token: accessTokenHash, scope: scope, expirationDate: expirationDate}}, function (err) {
+        db.collection('accessTokens').update({userId: token.userId}, {$set: {token: accessTokenHash, scope: scope, expirationDate: expirationDate}}, function (err) {
             if (err) return done(err)
             done(null, newAccessToken, refreshToken, {expires_in: expirationDate})
         })
