@@ -24,7 +24,7 @@ Navigate to /registration. Register a new user.
 
 ###### 2 - Get authorization token
 
-Navigate to /login?clientId=&lt;clientId&gt;&redirectUri=&lt;redirectUri&gt;&responseType=code. Login with username and password. Then allow the client to access your account.
+Navigate to /oauth/authorization?clientId=&lt;clientId&gt;&redirectUri=&lt;redirectUri&gt;&responseType=code. Login with username and password. Then allow the client to access your account.
 If everything works the authorization code is returned.
 
 ###### 3 - Exchange the authorization code for a access token
