@@ -1,7 +1,7 @@
 extends layout
 block content
     div
-      form(action='/login',method='post')
+      form(action='/oauth/authorization',method='post')
         p
             label(for='username') Username: 
                input(id='username', type='text',value='', name='username')
