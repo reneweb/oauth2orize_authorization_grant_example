@@ -31,6 +31,7 @@ app.post('/registration', registration.registerUser)
 
 app.get('/login', function(req, res) { res.render('login', {clientId : req.query.clientId, redirectUri: req.query.redirectUri}) })
 app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), function(req, res) {
+    //It is not essential for the flow to redirect here, it would also be possible to call this directly
     res.redirect('/oauth/authorization?response_type=code&client_id=' + req.body.clientId + '&redirect_uri=' + req.body.redirectUri)
   })
 
