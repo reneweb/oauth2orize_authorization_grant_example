@@ -84,7 +84,7 @@ server.exchange(oauth2orize.exchange.refreshToken(function (client, refreshToken
 exports.authorization = [
   function(req, res, next) {
     if (req.user) next()
-    else res.redirect('/login')
+    else res.redirect('/oauth/authorization')
   },
   server.authorization(function(clientId, redirectURI, done) {
     db.collection('clients').findOne({clientId: clientId}, function(err, client) {
@@ -106,7 +106,7 @@ exports.authorization = [
 exports.decision = [
   function(req, res, next) {
     if (req.user) next()
-    else res.redirect('/login')
+    else res.redirect('/oauth/authorization')
   },
   server.decision()
 ]
